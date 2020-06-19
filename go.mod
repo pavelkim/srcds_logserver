@@ -1,3 +1,3 @@
-module github.com/pavelkim/srcds_log_server
+module github.com/pavelkim/srcds_logserver
 
 go 1.12
