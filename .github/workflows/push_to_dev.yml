@@ -49,7 +49,7 @@ jobs:
       run: for item in plugins/*go; do source_filename="${item#*/}"; plugin_name="${source_filename%.*}"; go build -v -buildmode=plugin -o "${plugin_name}.so" "${item}"; done
 
     - name: Verify binary file
-      run: md5sum server
+      run: md5sum srcds_logserver
 
     - name: Test
       run: go test -v .
