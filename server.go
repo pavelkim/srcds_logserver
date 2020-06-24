@@ -60,7 +60,21 @@ func main() {
 		log.Fatal("Error while looking up a symbol:", err)
 	}
 
+	versionSymbol, err := payloadHandlerFilename.Lookup("PayloadHandlerVersion")
+	if err != nil {
+		log.Fatal("Error while looking up a symbol:", err)
+	}
+
+	descriptionSymbol, err := payloadHandlerFilename.Lookup("PayloadHandlerDescription")
+	if err != nil {
+		log.Fatal("Error while looking up a symbol:", err)
+	}
+
 	payloadHandler := symbol.(func([]byte) (bool, error))
+	payloadHandlerDescription := descriptionSymbol.(*string)
+	payloadHandlerVersion := versionSymbol.(*string)
+
+	log.Printf("Payload handler: %s (version %s)\n", *payloadHandlerDescription, *payloadHandlerVersion)
 
 	listen_address, err := net.ResolveUDPAddr("udp4", *bindPtr)
 	if err != nil {
