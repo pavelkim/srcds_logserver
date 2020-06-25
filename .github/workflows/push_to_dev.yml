@@ -46,7 +46,7 @@ jobs:
       run: go build -ldflags="-X 'main.BuildVersion=${{steps.readversionfile.outputs.desiredversion}}'" -v .
 
     - name: Build plugins
-      run: for item in plugins/*go; do source_filename="${item#*/}"; plugin_name="${source_filename%.*}"; go build -v -buildmode=plugin -o "${plugin_name}.so" "${item}"; done
+      run: for item in plugins/*go; do source_filename="${item#*/}"; plugin_name="${source_filename%.*}"; go build -v -ldflags="-X 'main.PayloadHandlerVersion=${{steps.readversionfile.outputs.desiredversion}}'" -buildmode=plugin -o "${plugin_name}.so" "${item}"; done
 
     - name: Verify binary file
       run: md5sum srcds_logserver
@@ -59,8 +59,8 @@ jobs:
       run: |
         echo "::set-output name=tagexists::$(curl -s -X GET -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --url https://api.github.com/repos/${{ github.repository }}/git/refs/tags/${{steps.readversionfile.outputs.desiredversion}} | jq .object.sha)"
     
-    - name: Check if planned tag doesn't exist yet
-      run: if [[ "${{ steps.tagexists.outputs.tagexists }}" == "null" ]]; then exit 0; else exit 2; fi
+    - name: Display the planned tag
+      run: echo "Planned tag is '${{ steps.tagexists.outputs.tagexists }}'"
 
     - name: Verify compiled plugins
       run: md5sum *.so
